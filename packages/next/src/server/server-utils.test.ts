@@ -202,3 +202,23 @@ describe('normalizeDynamicRouteParams', () => {
     })
   })
 })
+
+describe('interpolateDynamicPath', () => {
+  it('should split string catch-all values from the proxy into segments', () => {
+    for (const page of ['/[...slug]', '/[[...slug]]']) {
+      const { interpolateDynamicPath } = getServerUtils({
+        page,
+        basePath: '',
+        rewrites: {},
+        i18n: undefined,
+        pageIsDynamic: true,
+        caseSensitive: false,
+      })
+
+      expect(interpolateDynamicPath(page, { slug: 'a/b/c' })).toBe('/a/b/c')
+      expect(interpolateDynamicPath(page, { slug: ['a', 'b/c'] })).toBe(
+        '/a/b%2Fc'
+      )
+    }
+  })
+})

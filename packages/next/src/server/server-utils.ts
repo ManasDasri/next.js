@@ -89,7 +89,13 @@ export function interpolateDynamicPath(
     }
 
     let paramValue: string
-    const value = params[param]
+    let value = params[param]
+
+    // query values from the proxy aren't already split into arrays
+    // so make sure to normalize catch-all values
+    if (typeof value === 'string' && repeat) {
+      value = value.split('/')
+    }
 
     if (Array.isArray(value)) {
       paramValue = value.map((v) => v && encodeURIComponent(v)).join('/')
